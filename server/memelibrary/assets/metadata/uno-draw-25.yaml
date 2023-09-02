@@ -1,0 +1,7 @@
+aliases:
+  - draw
+slots:
+  - x: 70
+    y: 160
+    width: 170
+    height: 85

@@ -1,0 +1,11 @@
+aliases:
+  - jack-sparrow
+slots:
+  - x: 135
+    y: 130
+    width: 325
+    height: 60
+  - x: 75
+    y: 340
+    width: 275
+    height: 50

@@ -1,0 +1,11 @@
+aliases:
+  - corporate
+slots:
+  - x: 175
+    y: 135
+    width: 425
+    height: 255
+  - x: 820
+    y: 205
+    width: 500
+    height: 355

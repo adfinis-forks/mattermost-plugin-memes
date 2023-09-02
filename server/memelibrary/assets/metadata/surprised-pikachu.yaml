@@ -1,0 +1,13 @@
+slots:
+  - x: 15
+    y: 15
+    width: 1845
+    height: 215
+  - x: 15
+    y: 260
+    width: 1845
+    height: 215
+  - x: 15
+    y: 500
+    width: 1845
+    height: 215
