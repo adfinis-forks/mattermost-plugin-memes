@@ -1,0 +1,19 @@
+aliases:
+  - woman-cat
+slots:
+  - x: 200
+    y: 55
+    width: 110
+    height: 160
+  - x: 555
+    y: 55
+    width: 110
+    height: 160
+  - x: 205
+    y: 275
+    width: 110
+    height: 160
+  - x: 555
+    y: 280
+    width: 110
+    height: 160

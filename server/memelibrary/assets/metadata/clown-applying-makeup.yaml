@@ -1,0 +1,17 @@
+slots:
+  - x: 10
+    y: 5
+    width: 400
+    height: 180
+  - x: 10
+    y: 205
+    width: 400
+    height: 180
+  - x: 10
+    y: 405
+    width: 400
+    height: 180
+  - x: 10
+    y: 605
+    width: 400
+    height: 180

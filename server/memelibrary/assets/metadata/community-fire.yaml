@@ -1,0 +1,21 @@
+slots:
+  - x: 305
+    y: 230
+    width: 350
+    height: 130
+  - x: 110
+    y: 590
+    width: 180
+    height: 100
+  - x: 340
+    y: 795
+    width: 180
+    height: 100
+  - x: 630
+    y: 810
+    width: 180
+    height: 100
+  - x: 640
+    y: 595
+    width: 180
+    height: 100
