@@ -1,0 +1,9 @@
+slots:
+  - x: 45
+    y: 250
+    width: 535
+    height: 75
+  - x: 45
+    y: 595
+    width: 535
+    height: 75

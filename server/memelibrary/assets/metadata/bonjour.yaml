@@ -1,0 +1,11 @@
+aliases:
+  - polar-bear-bonjour
+slots:
+  - x: 5
+    y: 5
+    width: 530
+    height: 90
+  - x: 5
+    y: 130
+    width: 530
+    height: 90

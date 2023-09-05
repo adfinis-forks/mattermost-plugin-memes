@@ -1,0 +1,11 @@
+aliases:
+  - two-cars-passing-each-other
+slots:
+  - x: 170
+    y: 185
+    width: 300
+    height: 70
+  - x: 170
+    y: 420
+    width: 300
+    height: 70

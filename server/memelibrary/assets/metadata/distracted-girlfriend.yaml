@@ -1,0 +1,13 @@
+slots:
+  - x: 50
+    y: 305
+    width: 670
+    height: 245
+  - x: 895
+    y: 520
+    width: 550
+    height: 220
+  - x: 1505
+    y: 330
+    width: 520
+    height: 190
