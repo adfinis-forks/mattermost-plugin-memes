@@ -1,0 +1,9 @@
+slots:
+  - x: 10
+    y: 465
+    width: 320
+    height: 100
+  - x: 205
+    y: 820
+    width: 420
+    height: 100
