@@ -1,6 +1,5 @@
 aliases:
   - annoyed-picard
-  - captain-picard-wtf
 patterns:
   - pattern: (why|what) the fuck\b(.+)
     text:

@@ -1,5 +1,4 @@
 aliases:
-  - you-get
   - everyone-gets
 patterns:
   - pattern: (you get|everyone gets) (.+)

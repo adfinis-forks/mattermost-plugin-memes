@@ -1,5 +1,4 @@
 aliases:
-  - fry
   - not-sure
 patterns:
   - pattern: (not sure if .+) (or .+)
