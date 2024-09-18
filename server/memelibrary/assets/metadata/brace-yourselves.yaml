@@ -1,5 +1,3 @@
-aliases:
-  - brace-yourself
 patterns:
   - pattern: brace (yourselves|yourself)([^a-z]+)?\b([^,\.;]+.*)
     text:

@@ -1,5 +1,3 @@
-aliases:
-    - dr-evil
 font: ComicNeue-Regular
 patterns:
   - pattern: (prepare the)\s(.+)

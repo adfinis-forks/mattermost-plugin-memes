@@ -1,5 +1,3 @@
-aliases:
-  - thatd-be-great
 patterns:
   - pattern: (.+)\b(that would|that'd|thatd)( be great[^a-z]*)
     text:

@@ -1,5 +1,3 @@
-aliases:
-  - annoyed-picard
 patterns:
   - pattern: (why|what) the fuck\b(.+)
     text:

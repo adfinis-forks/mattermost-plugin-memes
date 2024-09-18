@@ -1,5 +1,3 @@
-aliases:
-  - not-sure
 patterns:
   - pattern: (not sure if .+) (or .+)
     text:

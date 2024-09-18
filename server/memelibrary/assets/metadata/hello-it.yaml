@@ -1,5 +1,3 @@
-aliases:
-  - hello-it
 patterns:
   - pattern: (Hello|hello) (IT,?|it,?)(.+)
     text:

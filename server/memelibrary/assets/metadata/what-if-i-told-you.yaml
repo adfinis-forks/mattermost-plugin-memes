@@ -1,5 +1,3 @@
-aliases:
-  - morpheus
 patterns:
   - pattern: (what if i told you)\b(.+)
     text:

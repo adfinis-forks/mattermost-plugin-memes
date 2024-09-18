@@ -1,5 +1,3 @@
-aliases:
-  - kermit
 patterns:
   - pattern: (.*) (but that'?s none of [^ ]+ business.*)
     text:
