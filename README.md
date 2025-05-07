@@ -1,3 +1,7 @@
+# Disclaimer
+
+**This repository is community supported and not maintained by Mattermost. Mattermost disclaims liability for integrations, including Third Party Integrations and Mattermost Integrations. Integrations may be modified or discontinued at any time.**
+
 # Mattermost Memes Plugin
 
 [![Build Status](https://img.shields.io/circleci/project/github/mattermost/mattermost-plugin-memes/master.svg)](https://circleci.com/gh/mattermost/mattermost-plugin-memes)
@@ -14,10 +18,6 @@ This plugin will create a slash command that you can use to create memes!
 For more information like available memes or command syntax type `/meme ` and press enter.
 
 ## Installation
-
-From Mattermost 5.16 and later, the Memes Plugin is included in the Plugin Marketplace which can be accessed from **Main Menu > Plugins Marketplace**. You can install the Memes plugin there.
-
-In Mattermost 5.15 and earlier, follow these steps:
 
 1. Go to https://github.com/mattermost/mattermost-plugin-memes/releases/latest to download the latest release file in zip or tar.gz format.
 2. Upload the file through **System Console > Plugins > Management**. See [documentation](https://docs.mattermost.com/administration/plugins.html#set-up-guide) for more details.
