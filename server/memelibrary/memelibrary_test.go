@@ -14,16 +14,16 @@ func TestIsImageAsset(t *testing.T) {
 
 func TestMustLoadImage(t *testing.T) {
 	assert.NotPanics(t, func() {
-		img := mustLoadImage("images/anakin-right.jpg")
+		img := mustLoadImage(assets, "assets/images/anakin-right.jpg")
 		assert.NotNil(t, img)
 	})
 
 	assert.Panics(t, func() {
-		mustLoadImage("this-asset-does-not-exist.jpg")
+		mustLoadImage(assets, "this-asset-does-not-exist.jpg")
 	})
 
 	assert.Panics(t, func() {
-		mustLoadImage("metadata/anakin-right.yaml")
+		mustLoadImage(assets, "assets/metadata/anakin-right.yaml")
 	})
 }
 

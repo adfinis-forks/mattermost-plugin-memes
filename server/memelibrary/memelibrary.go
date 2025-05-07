@@ -3,6 +3,7 @@ package memelibrary
 import (
 	"bytes"
 	"image"
+	"io/fs"
 	"path/filepath"
 	"strings"
 
@@ -27,8 +28,8 @@ func isImageAsset(assetName string) bool {
 	return ext == ".jpg" || ext == ".jpeg" || ext == ".png"
 }
 
-func mustLoadImage(assetName string) image.Image {
-	img, _, err := image.Decode(bytes.NewReader(MustAsset(assetName)))
+func mustLoadImage(fsys fs.FS, assetName string) image.Image {
+	img, _, err := image.Decode(bytes.NewReader(MustAsset(fsys, assetName)))
 	if err != nil {
 		panic(err)
 	}
@@ -36,39 +37,79 @@ func mustLoadImage(assetName string) image.Image {
 }
 
 func init() {
-	fontAssets, _ := AssetDir("fonts")
-	for _, assetName := range fontAssets {
-		fontName := strings.TrimSuffix(assetName, filepath.Ext(assetName))
-		font, err := truetype.Parse(MustAsset(filepath.Join("fonts", assetName)))
+	fontAssets, _ := AssetDir("assets/fonts")
+	err := fs.WalkDir(fontAssets, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		if filepath.Ext(path) != ".ttf" {
+			return nil
+		}
+
+		fontName := strings.TrimSuffix(d.Name(), filepath.Ext(d.Name()))
+		font, err := truetype.Parse(MustAsset(fontAssets, path))
 		if err != nil {
 			panic(err)
 		}
 		fonts[fontName] = font
+		return nil
+	})
+	if err != nil {
+		panic(err)
 	}
 
-	imageAssets, _ := AssetDir("images")
-	for _, assetName := range imageAssets {
-		if !isImageAsset(assetName) {
-			continue
-		}
-		templateName := strings.TrimSuffix(assetName, filepath.Ext(assetName))
-		images[templateName] = mustLoadImage(filepath.Join("images", assetName))
-	}
-
-	metadataAssets, _ := AssetDir("metadata")
-	for _, assetName := range metadataAssets {
-		ext := filepath.Ext(assetName)
-		if ext != ".yaml" {
-			continue
-		}
-
-		templateName := strings.TrimSuffix(assetName, ext)
-
-		m, err := ParseMetadata(MustAsset(filepath.Join("metadata", assetName)))
+	imageAssets, _ := AssetDir("assets/images")
+	err = fs.WalkDir(imageAssets, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			panic(err)
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+
+		if !isImageAsset(d.Name()) {
+			return nil
+		}
+
+		templateName := strings.TrimSuffix(d.Name(), filepath.Ext(d.Name()))
+		images[templateName] = mustLoadImage(imageAssets, path)
+
+		return nil
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	metadataAssets, _ := AssetDir("assets/metadata")
+	err = fs.WalkDir(metadataAssets, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		if filepath.Ext(d.Name()) != ".yaml" {
+			return nil
+		}
+		templateName := strings.TrimSuffix(d.Name(), filepath.Ext(d.Name()))
+		if _, ok := images[templateName]; !ok {
+			return nil
+		}
+		if _, ok := metadata[templateName]; ok {
+			return nil
+		}
+		m, err := ParseMetadata(MustAsset(metadataAssets, path))
+		if err != nil {
+			return err
 		}
 		metadata[templateName] = m
+		return nil
+	})
+	if err != nil {
+		panic(err)
 	}
 
 	for templateName, metadata := range metadata {
