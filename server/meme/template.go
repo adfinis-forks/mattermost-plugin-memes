@@ -20,7 +20,9 @@ func (t *Template) Render(text []string) (image.Image, error) {
 		if i >= len(text) {
 			break
 		}
-		slot.Render(img, text[i])
+		if err := slot.Render(img, text[i]); err != nil {
+			return nil, err
+		}
 	}
 
 	return img, nil

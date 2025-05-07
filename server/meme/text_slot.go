@@ -7,7 +7,9 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/ccoveille/go-safecast"
 	"github.com/golang/freetype/truetype"
+	"github.com/pkg/errors"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
@@ -39,14 +41,14 @@ type TextSlot struct {
 	AllUppercase        bool
 }
 
-func (s *TextSlot) Render(img draw.Image, text string) {
+func (s *TextSlot) Render(img draw.Image, text string) error {
 	if s.AllUppercase {
 		text = strings.ToUpper(text)
 	}
 
-	layout := s.TextLayout(text)
+	layout, err := s.TextLayout(text)
 	if layout == nil {
-		return
+		return err
 	}
 
 	textColor := s.TextColor
@@ -82,6 +84,7 @@ func (s *TextSlot) Render(img draw.Image, text string) {
 		}
 		drawer.DrawString(line)
 	}
+	return nil
 }
 
 type TextLayout struct {
@@ -90,14 +93,22 @@ type TextLayout struct {
 	LinePositions []fixed.Point26_6
 }
 
-func (s *TextSlot) TextLayout(text string) *TextLayout {
+func (s *TextSlot) TextLayout(text string) (*TextLayout, error) {
 	fontSize := s.MaxFontSize
 	if fontSize == 0.0 {
 		fontSize = 80.0
 	}
 
-	hlimit := fixed.Int26_6(s.Bounds.Dx() * 64)
-	vlimit := fixed.Int26_6(s.Bounds.Dy() * 64)
+	safeHlimit, err := safecast.ToInt32(s.Bounds.Dx() * 64)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to convert bounds to int32")
+	}
+	hlimit := fixed.Int26_6(safeHlimit)
+	safeVlimit, err := safecast.ToInt32(s.Bounds.Dy() * 64)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to convert bounds to int32")
+	}
+	vlimit := fixed.Int26_6(safeVlimit)
 
 	for fontSize >= 6.0 {
 		face := truetype.NewFace(s.Font, &truetype.Options{
@@ -116,8 +127,17 @@ func (s *TextSlot) TextLayout(text string) *TextLayout {
 			LinePositions: make([]fixed.Point26_6, len(lines)),
 		}
 
-		y := fixed.Int26_6(s.Bounds.Min.Y * 64)
-		totalHeight := face.Metrics().Height.Mul(fixed.Int26_6(len(lines) * 64))
+		safeY, err := safecast.ToInt32(s.Bounds.Min.Y * 64)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to convert bounds to int32")
+		}
+		y := fixed.Int26_6(safeY)
+		safeLenLines, err := safecast.ToInt32((len(lines) * 64))
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to convert lines to int32")
+		}
+		totalHeight := face.Metrics().Height.Mul(fixed.Int26_6(safeLenLines))
+		//nolint:exhaustive
 		switch s.VerticalAlignment {
 		case Middle:
 			y += (vlimit - totalHeight) / 2
@@ -126,7 +146,12 @@ func (s *TextSlot) TextLayout(text string) *TextLayout {
 		}
 
 		for i, width := range widths {
-			x := fixed.Int26_6(s.Bounds.Min.X * 64)
+			safeX, err := safecast.ToInt32(s.Bounds.Min.X * 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to convert bounds to int32")
+			}
+			x := fixed.Int26_6(safeX)
+			//nolint:exhaustive
 			switch s.HorizontalAlignment {
 			case Center:
 				x += (hlimit - width) / 2
@@ -139,10 +164,10 @@ func (s *TextSlot) TextLayout(text string) *TextLayout {
 				Y: y,
 			}
 		}
-		return layout
+		return layout, nil
 	}
 
-	return nil
+	return nil, nil
 }
 
 func lines(face font.Face, text string, limit fixed.Int26_6) (lines []string, widths []fixed.Int26_6) {

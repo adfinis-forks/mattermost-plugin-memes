@@ -8,7 +8,8 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/mattermost/mattermost-plugin-memes/server/meme"
+	"github.com/adfinis-forks/mattermost-plugin-memes/server/meme"
+	"github.com/pkg/errors"
 )
 
 type Pattern struct {
@@ -38,12 +39,12 @@ type Metadata struct {
 func ParseMetadata(in []byte) (*Metadata, error) {
 	var m Metadata
 	if err := yaml.Unmarshal(in, &m); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to parse metadata")
 	}
 	for _, pattern := range m.Patterns {
 		r, err := regexp.Compile("(?i)^" + pattern.Pattern + "$")
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrapf(err, "failed to compile pattern %q", pattern.Pattern)
 		}
 		pattern.pattern = r
 	}
@@ -78,7 +79,7 @@ func (m *Metadata) TextSlots(bounds image.Rectangle) (slots []*meme.TextSlot) {
 			}
 			slots = append(slots, textSlot)
 		}
-		return
+		return //nolint:nakedret
 	}
 
 	padding := bounds.Dy() / 20
@@ -100,6 +101,7 @@ func (m *Metadata) TextSlots(bounds image.Rectangle) (slots []*meme.TextSlot) {
 	}
 }
 
+// #nosec G115
 func sliceToColor(s []int) color.Color {
 	switch len(s) {
 	case 1:

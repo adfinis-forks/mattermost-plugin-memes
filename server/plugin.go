@@ -14,11 +14,11 @@ import (
 
 	"github.com/gorilla/mux"
 	shellquote "github.com/kballard/go-shellquote"
-	"github.com/mattermost/mattermost-server/v5/model"
-	"github.com/mattermost/mattermost-server/v5/plugin"
+	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/plugin"
 
-	"github.com/mattermost/mattermost-plugin-memes/server/meme"
-	"github.com/mattermost/mattermost-plugin-memes/server/memelibrary"
+	"github.com/adfinis-forks/mattermost-plugin-memes/server/meme"
+	"github.com/adfinis-forks/mattermost-plugin-memes/server/memelibrary"
 )
 
 const memeCommand = "meme"
@@ -29,7 +29,7 @@ func resolveMeme(input string) (*meme.Template, []string, error) {
 	}
 	parts, err := shellquote.Split(input)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.Wrap(err, "failed to parse input")
 	}
 	if template := memelibrary.Template(parts[0]); template != nil {
 		return template, parts[1:], nil
@@ -41,7 +41,7 @@ func demo(args []string) error {
 	fs := flag.NewFlagSet("demo", flag.ContinueOnError)
 	out := fs.String("out", "", "output path to write the meme to")
 	if err := fs.Parse(args); err != nil {
-		return err
+		return errors.Wrap(err, "failed to parse arguments")
 	}
 
 	input := fs.Args()
@@ -57,18 +57,18 @@ func demo(args []string) error {
 	if *out != "" {
 		f, err := os.Create(*out)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to create output file")
 		}
-		defer f.Close()
+		defer f.Close() //nolint:errcheck
 
 		img, err := template.Render(text)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to render template")
 		}
 		if err := jpeg.Encode(f, img, &jpeg.Options{
 			Quality: 100,
 		}); err != nil {
-			return err
+			return errors.Wrap(err, "failed to encode image")
 		}
 	}
 
@@ -123,7 +123,7 @@ func (p *Plugin) OnActivate() error {
 }
 
 func createMemesCommand() *model.Command {
-	var availableMemes = getAvailableMemes()
+	availableMemes := getAvailableMemes()
 	memes := model.NewAutocompleteData(memeCommand, "[meme-name]", "Create awesome Memes yourself!")
 
 	for _, name := range availableMemes {
@@ -141,7 +141,7 @@ func createMemesCommand() *model.Command {
 }
 
 func getAvailableMemes() []string {
-	var availableMemes []string
+	var availableMemes []string //nolint:prealloc
 	for name, metadata := range memelibrary.Memes() {
 		availableMemes = append(availableMemes, name)
 		availableMemes = append(availableMemes, metadata.Aliases...)
@@ -150,19 +150,19 @@ func getAvailableMemes() []string {
 	return availableMemes
 }
 
-func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) ServeHTTP(_ *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	p.router.ServeHTTP(w, r)
 }
 
-func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) ExecuteCommand(_ *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	siteURL := p.GetSiteURL()
 
 	input := strings.TrimSpace(strings.TrimPrefix(args.Command, "/meme"))
 
 	if input == "" || input == "help" {
-		var availableMemes = getAvailableMemes()
+		availableMemes := getAvailableMemes()
 		return &model.CommandResponse{
-			ResponseType: model.COMMAND_RESPONSE_TYPE_EPHEMERAL,
+			ResponseType: model.CommandResponseTypeInChannel,
 			Text: `You can get started meming in one of two ways:
 
 If your meme has well-defined phrasing, you can just type it:
@@ -197,7 +197,7 @@ Available memes: ` + strings.Join(availableMemes, ", "),
 	}
 
 	resp := &model.CommandResponse{
-		ResponseType: model.COMMAND_RESPONSE_TYPE_IN_CHANNEL,
+		ResponseType: model.CommandResponseTypeInChannel,
 		Text:         "![" + template.Name + "](" + siteURL + "/plugins/memes/templates/" + template.Name + ".jpg" + queryString + ")",
 	}
 	return resp, nil

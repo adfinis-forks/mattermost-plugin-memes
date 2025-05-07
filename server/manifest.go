@@ -2,10 +2,42 @@
 
 package main
 
-var manifest = struct {
-	ID      string
-	Version string
-}{
-	ID:      "memes",
-	Version: "1.6.2",
+import (
+	"encoding/json"
+	"strings"
+
+	"github.com/mattermost/mattermost/server/public/model"
+)
+
+var manifest *model.Manifest
+
+const manifestStr = `
+{
+  "id": "memes",
+  "name": "Memes",
+  "description": "Gives you the ability to quickly create and post memes via a /meme slash command.",
+  "homepage_url": "https://github.com/adfinis-forks/mattermost-plugin-memes",
+  "support_url": "https://github.com/adfinis-forks/mattermost-plugin-memes/issues",
+  "release_notes_url": "https://github.com/adfinis-forks/mattermost-plugin-memes/releases/tag/v1.5.0",
+  "version": "1.6.2",
+  "min_server_version": "5.2.0",
+  "server": {
+    "executables": {
+      "darwin-amd64": "server/dist/plugin-darwin-amd64",
+      "linux-amd64": "server/dist/plugin-linux-amd64",
+      "windows-amd64": "server/dist/plugin-windows-amd64.exe"
+    },
+    "executable": ""
+  },
+  "settings_schema": {
+    "header": "",
+    "footer": "* To report an issue, make a suggestion or a contribution, [check the repository](https://github.com/adfinis-forks/mattermost-plugin-memes).",
+    "settings": null,
+    "sections": null
+  }
+}
+`
+
+func init() {
+	_ = json.NewDecoder(strings.NewReader(manifestStr)).Decode(&manifest)
 }

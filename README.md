@@ -19,7 +19,7 @@ For more information like available memes or command syntax type `/meme ` and pr
 
 ## Installation
 
-1. Go to https://github.com/mattermost/mattermost-plugin-memes/releases/latest to download the latest release file in zip or tar.gz format.
+1. Go to https://github.com/adfinis-forks/mattermost-plugin-memes/releases/latest to download the latest release file in zip or tar.gz format.
 2. Upload the file through **System Console > Plugins > Management**. See [documentation](https://docs.mattermost.com/administration/plugins.html#set-up-guide) for more details.
 
 ## Development

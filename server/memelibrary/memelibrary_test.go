@@ -8,13 +8,13 @@ import (
 )
 
 func TestIsImageAsset(t *testing.T) {
-	assert.True(t, isImageAsset("all-the-things.jpg"))
-	assert.False(t, isImageAsset("all-the-things.json"))
+	assert.True(t, isImageAsset("anakin-right.jpg"))
+	assert.False(t, isImageAsset("anakin-right.json"))
 }
 
 func TestMustLoadImage(t *testing.T) {
 	assert.NotPanics(t, func() {
-		img := mustLoadImage("images/all-the-things.jpg")
+		img := mustLoadImage("images/anakin-right.jpg")
 		assert.NotNil(t, img)
 	})
 
@@ -23,14 +23,14 @@ func TestMustLoadImage(t *testing.T) {
 	})
 
 	assert.Panics(t, func() {
-		mustLoadImage("metadata/all-the-things.yaml")
+		mustLoadImage("metadata/anakin-right.yaml")
 	})
 }
 
 func TestTemplate(t *testing.T) {
 	assert.Nil(t, Template("not-a-template"))
 
-	template := Template("all-the-things")
+	template := Template("anakin-right")
 	require.NotNil(t, template)
 	assert.NotNil(t, template.Image)
 }
